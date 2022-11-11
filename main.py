@@ -45,7 +45,7 @@ import ratslam
 
 if __name__ == '__main__':
     # Change this line to open other movies
-    data = r'D:\Bkp\ratslam\data\stlucia_testloop.avi'
+    data = '/Users/pallavi.ramicetty/Documents/workspace/stlucia_testloop.avi'
 
     video = cv2.VideoCapture(data)
     slam = ratslam.Ratslam()
@@ -93,10 +93,10 @@ if __name__ == '__main__':
         plot.title('POSE CELL ACTIVATION')
         x, y, th = slam.pc
         ax.plot(x, y, 'x')
-        ax.plot3D([0, 60], [y[-1], y[-1]], [th[-1], th[-1]], 'K')
-        ax.plot3D([x[-1], x[-1]], [0, 60], [th[-1], th[-1]], 'K')
-        ax.plot3D([x[-1], x[-1]], [y[-1], y[-1]], [0, 36], 'K')
-        ax.plot3D([x[-1]], [y[-1]], [th[-1]], 'mo')
+        ax.plot3D([0, 60], [y[-1], y[-1]], [th[-1], th[-1]], 'gray')
+        ax.plot3D([x[-1], x[-1]], [0, 60], [th[-1], th[-1]], 'gray')
+        ax.plot3D([x[-1], x[-1]], [y[-1], y[-1]], [0, 36], 'gray')
+        ax.plot3D([x[-1]], [y[-1]], [th[-1]], 'red')
         ax.grid()
         ax.axis([0, 60, 0, 60]);
         ax.set_zlim(0, 36)
@@ -121,7 +121,7 @@ if __name__ == '__main__':
         plot.pause(0.1)
         # ==========================================================
 
-    print 'DONE!'
-    print 'n_ templates:', len(slam.view_cells.cells)
-    print 'n_ experiences:', len(slam.experience_map.exps)
+    print('DONE!')
+    print('n_ templates:', len(slam.view_cells.cells))
+    print('n_ experiences:', len(slam.experience_map.exps))
     plot.show()
