@@ -87,6 +87,8 @@ def compare_segments(seg1, seg2, slen):
 
     for offset in range(slen+1):
         e = (cwl-offset)
+        if offset==30:
+            print(offset)
 
         cdiff = np.abs(seg1[offset:cwl] - seg2[:e])
         cdiff = np.sum(cdiff)/e
@@ -106,23 +108,29 @@ def compare_segments(seg1, seg2, slen):
 
 # CONSTANTS AND ALGORITHM PARAMETERS ==========================================
 # NOTE: it is need a refactoring to set these variables as a model parameter
+# Pose cell activity network constants
 PC_VT_INJECT_ENERGY     = 0.1
-PC_DIM_XY               = 61
-PC_DIM_TH               = 36
-PC_W_E_VAR              = 1
+PC_DIM_XY               = 61 # The pose cell activity (x,y) dimension
+PC_DIM_TH               = 36 # The pose cell activity theta dimension
+PC_W_E_VAR              = 1 # The variance for the local excitiation guassian sphere
 PC_W_E_DIM              = 7
+# The variance for the local inhibition guassian sphere
 PC_W_I_VAR              = 2
 PC_W_I_DIM              = 5
 PC_GLOBAL_INHIB         = 0.00002
+# the posecell excitation and inhibition 3D weight matricies
 PC_W_EXCITE             = create_pc_weights(PC_W_E_DIM, PC_W_E_VAR)
 PC_W_INHIB              = create_pc_weights(PC_W_I_DIM, PC_W_I_VAR)
+# convienience constants
 PC_W_E_DIM_HALF         = int(np.floor(PC_W_E_DIM/2.))
 PC_W_I_DIM_HALF         = int(np.floor(PC_W_I_DIM/2.))
 PC_C_SIZE_TH            = (2.*np.pi)/PC_DIM_TH
+# these act as lookups to wrap the pose cell excitation/inhibition weight steps
 PC_E_XY_WRAP            = [*range(PC_DIM_XY-PC_W_E_DIM_HALF, PC_DIM_XY)] + [*range(PC_DIM_XY)] + [*range(PC_W_E_DIM_HALF)]
 PC_E_TH_WRAP            = [*range(PC_DIM_TH-PC_W_E_DIM_HALF, PC_DIM_TH)] + [*range(PC_DIM_TH)] + [*range(PC_W_E_DIM_HALF)]
 PC_I_XY_WRAP            = [*range(PC_DIM_XY-PC_W_I_DIM_HALF, PC_DIM_XY)] + [*range(PC_DIM_XY)] + [*range(PC_W_I_DIM_HALF)]
-PC_I_TH_WRAP            = [*range(PC_DIM_TH-PC_W_I_DIM_HALF, PC_DIM_TH)] + [*range(PC_DIM_TH)] + [*range(PC_W_I_DIM_HALF)]            
+PC_I_TH_WRAP            = [*range(PC_DIM_TH-PC_W_I_DIM_HALF, PC_DIM_TH)] + [*range(PC_DIM_TH)] + [*range(PC_W_I_DIM_HALF)] 
+# these are the lookups for finding the centre of the posecell          
 PC_XY_SUM_SIN_LOOKUP    = np.sin(np.multiply(range(1, PC_DIM_XY+1), (2*np.pi)/PC_DIM_XY))
 PC_XY_SUM_COS_LOOKUP    = np.cos(np.multiply(range(1, PC_DIM_XY+1), (2*np.pi)/PC_DIM_XY))
 PC_TH_SUM_SIN_LOOKUP    = np.sin(np.multiply(range(1, PC_DIM_TH+1), (2*np.pi)/PC_DIM_TH))
@@ -130,6 +138,9 @@ PC_TH_SUM_COS_LOOKUP    = np.cos(np.multiply(range(1, PC_DIM_TH+1), (2*np.pi)/PC
 PC_CELLS_TO_AVG         = 3;
 PC_AVG_XY_WRAP          = [*range(PC_DIM_XY-PC_CELLS_TO_AVG, PC_DIM_XY)] + [*range(PC_DIM_XY)] + [*range(PC_CELLS_TO_AVG)]
 PC_AVG_TH_WRAP          = [*range(PC_DIM_TH-PC_CELLS_TO_AVG, PC_DIM_TH)] + [*range(PC_DIM_TH)] + [*range(PC_CELLS_TO_AVG)]
+# these are the raw image dimensions
+# the offset is the number of pixels from the centre of the image to the
+# true zero rotation direction
 IMAGE_Y_SIZE            = 640
 IMAGE_X_SIZE            = 480
 IMAGE_VT_Y_RANGE        = slice((480//2 - 80 - 40), (480//2 + 80 - 40))
@@ -137,13 +148,15 @@ IMAGE_VT_X_RANGE        = slice((640//2 - 280 + 15), (640//2 + 280 + 15))
 IMAGE_VTRANS_Y_RANGE    = slice(270, 430)
 IMAGE_VROT_Y_RANGE      = slice(75, 240)
 IMAGE_ODO_X_RANGE       = slice(180+15, 460+15)
-VT_GLOBAL_DECAY         = 0.1
-VT_ACTIVE_DECAY         = 1.0
-VT_SHIFT_MATCH          = 20
-VT_MATCH_THRESHOLD      = 0.09
-EXP_DELTA_PC_THRESHOLD  = 1.0
-EXP_CORRECTION          = 0.5
-EXP_LOOPS               = 100
+
+# below first two parameters affect the fall off of view template injection into the pose cell activity network
+VT_GLOBAL_DECAY         = 0.1   # This is subtracted for all the view templates at each time step
+VT_ACTIVE_DECAY         = 1.0   # This is added the best matching view template
+VT_SHIFT_MATCH          = 20    # This determines how many +- pixels (therefore rotation) will be tested for match
+VT_MATCH_THRESHOLD      = 0.09  # This threshold determines whether a new view template is generated
+EXP_DELTA_PC_THRESHOLD  = 1.0   # The threshold change in pose cell activity to generate a new exp given the same view template
+EXP_CORRECTION          = 0.5   # The amount to correct each experience on either side of a link ( >0.5 is unstable)
+EXP_LOOPS               = 100   # The number of times to run the experience map correction per frame
 VTRANS_SCALE            = 100
 VISUAL_ODO_SHIFT_MATCH  = 140
 ODO_ROT_SCALING         = np.pi/180./7.
