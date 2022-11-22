@@ -39,9 +39,13 @@ the movie files. Thus, you can change only this file to use other media API.
 import cv2
 import numpy as np
 from matplotlib import pyplot as plot
+import matplotlib.patches as patches
 import mpl_toolkits.mplot3d.axes3d as p3
 
+
 import ratslam
+from ratslam._globals import *
+
 
 if __name__ == '__main__':
     # Change this line to open other movies
@@ -77,6 +81,9 @@ if __name__ == '__main__':
         ax = plot.subplot(2, 2, 1)
         plot.title('RAW IMAGE')
         plot.imshow(rgb_frame)
+        rect = patches.Rectangle((IMAGE_ODO_X_RANGE.start, IMAGE_VTRANS_Y_RANGE.start), IMAGE_ODO_X_RANGE.stop-IMAGE_ODO_X_RANGE.start, IMAGE_VTRANS_Y_RANGE.stop-IMAGE_VTRANS_Y_RANGE.start, linewidth=1, edgecolor='r', facecolor='none')
+        # Add the patch to the Axes
+        ax.add_patch(rect)
         ax.get_xaxis().set_ticks([])
         ax.get_yaxis().set_ticks([])
         # -----------------------------
