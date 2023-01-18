@@ -68,8 +68,8 @@ if __name__ == '__main__':
         # ==========================================================
 
         # Plot each 50 frames
-        if loop%50 != 0:
-            continue
+        # if loop%50 != 0:
+        #     continue
 
         # PLOT THE CURRENT RESULTS =================================
         b, g, r = cv2.split(frame)
@@ -81,9 +81,16 @@ if __name__ == '__main__':
         ax = plot.subplot(2, 2, 1)
         plot.title('RAW IMAGE')
         plot.imshow(rgb_frame)
-        rect = patches.Rectangle((IMAGE_ODO_X_RANGE.start, IMAGE_VTRANS_Y_RANGE.start), IMAGE_ODO_X_RANGE.stop-IMAGE_ODO_X_RANGE.start, IMAGE_VTRANS_Y_RANGE.stop-IMAGE_VTRANS_Y_RANGE.start, linewidth=1, edgecolor='r', facecolor='none')
+        rect1 = patches.Rectangle((IMAGE_ODO_X_RANGE.start, IMAGE_VTRANS_Y_RANGE.start), IMAGE_ODO_X_RANGE.stop-IMAGE_ODO_X_RANGE.start, IMAGE_VTRANS_Y_RANGE.stop-IMAGE_VTRANS_Y_RANGE.start, linewidth=2, edgecolor='r', facecolor='none')
+        rect1.set_label("VTRANS")
+        rect2 = patches.Rectangle((IMAGE_ODO_X_RANGE.start, IMAGE_VROT_Y_RANGE.start), IMAGE_ODO_X_RANGE.stop-IMAGE_ODO_X_RANGE.start, IMAGE_VROT_Y_RANGE.stop-IMAGE_VROT_Y_RANGE.start, linewidth=2, edgecolor='b', facecolor='none')
+        rect2.set_label("VROT")
+        rect3 = patches.Rectangle((IMAGE_VT_X_RANGE.start, IMAGE_VT_Y_RANGE.start), IMAGE_VT_X_RANGE.stop-IMAGE_VT_X_RANGE.start, IMAGE_VT_Y_RANGE.stop-IMAGE_VT_Y_RANGE.start, linewidth=2, edgecolor='g', facecolor='none')
+        rect3.set_label("VT")
         # Add the patch to the Axes
-        ax.add_patch(rect)
+        ax.add_patch(rect1)
+        ax.add_patch(rect2)
+        ax.add_patch(rect3)
         ax.get_xaxis().set_ticks([])
         ax.get_yaxis().set_ticks([])
         # -----------------------------
