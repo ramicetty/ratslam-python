@@ -62,7 +62,11 @@ class VisualOdometry(object):
             self.old_vtrans_template, 
             VISUAL_ODO_SHIFT_MATCH
         )
+
+        print("--------------VISUAL Odemetry------------")
         vtrans = diff*VTRANS_SCALE
+        print("vtrans : "+str(vtrans))
+
 
         if vtrans > 10: 
             vtrans = 0
@@ -79,11 +83,18 @@ class VisualOdometry(object):
             VISUAL_ODO_SHIFT_MATCH
         )
         vrot = offset*(50./img.shape[1])*np.pi/180;
+        print("vrot : "+str(vrot))
+
         self.old_vrot_template = template
 
         # Update raw odometry
         self.odometry[2] += vrot 
         self.odometry[0] += vtrans*np.cos(self.odometry[2])
         self.odometry[1] += vtrans*np.sin(self.odometry[2])
+        print("x-axis (distance): "+str(vtrans*np.cos(self.odometry[2])))
+        print("y-axis (distance): "+str(vtrans*np.sin(self.odometry[2])))
+        print("new position : ["+str(self.odometry[0])+","+str(self.odometry[1])+"]")
+
+
 
         return vtrans, vrot

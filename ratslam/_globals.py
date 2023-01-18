@@ -87,9 +87,6 @@ def compare_segments(seg1, seg2, slen):
 
     for offset in range(slen+1):
         e = (cwl-offset)
-        if offset==30:
-            print(offset)
-
         cdiff = np.abs(seg1[offset:cwl] - seg2[:e])
         cdiff = np.sum(cdiff)/e
 
@@ -148,7 +145,6 @@ IMAGE_VT_X_RANGE        = slice((640//2 - 280 + 15), (640//2 + 280 + 15))
 IMAGE_VTRANS_Y_RANGE    = slice(270, 430)
 IMAGE_VROT_Y_RANGE      = slice(75, 240)
 IMAGE_ODO_X_RANGE       = slice(180+15, 460+15)
-
 # below first two parameters affect the fall off of view template injection into the pose cell activity network
 VT_GLOBAL_DECAY         = 0.1   # This is subtracted for all the view templates at each time step
 VT_ACTIVE_DECAY         = 1.0   # This is added the best matching view template
