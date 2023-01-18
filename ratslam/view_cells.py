@@ -115,21 +115,32 @@ class ViewCells(object):
         :param th_pc: index th of the current pose cell.
         :return: the active view cell.
         '''
+        print("--------------VIEW CELL------------")
+        print("VT_MATCH_THRESHOLD: "+str(VT_MATCH_THRESHOLD))
         template = self._create_template(img)
         scores = self._score(template)
 
         # TO REMOVE
-        if scores:
-            self.activated_cells = np.array(self.cells)[np.array(scores)*template.size<VT_MATCH_THRESHOLD]
-        # ----
+        # if scores:
+        #     self.activated_cells = np.array(self.cells)[np.array(scores)*template.size<VT_MATCH_THRESHOLD]
+        # # ----
 
         if not self.size or np.min(scores)*template.size > VT_MATCH_THRESHOLD:
+            if self.size:
+                print("Created new View cell")
+                print("Matched view cells min score: "+str(np.min(scores)*template.size))
             cell = self.create_cell(template, x_pc, y_pc, th_pc)
+            print("Cell id: "+str(cell.id))
             self.prev_cell = cell
             return cell
-
+        print("Not created new view cell")
+        print("Matched view cells min score: "+str(np.min(scores)*template.size))
         i = np.argmin(scores)
         cell = self.cells[i]
+        print("Cell id: "+str(cell.id))
+
+
+        
         cell.decay += VT_ACTIVE_DECAY
 
         if self.prev_cell != cell:

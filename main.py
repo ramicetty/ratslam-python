@@ -57,11 +57,9 @@ if __name__ == '__main__':
     loop = 0
     _, frame = video.read()
     while True:
-        loop += 1
         print("==========================================================")
         print("FRAME NUMBER: " +str(loop))
-    
-
+        loop += 1
         # RUN A RATSLAM ITERATION ==================================
         _, frame = video.read()
         if frame is None: break
